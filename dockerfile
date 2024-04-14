@@ -4,13 +4,13 @@ FROM --platform=linux/amd64 node:14
 # Set the working directory in the container
 WORKDIR /app
 
+ENV REACT_APP_WS_IP="35.240.209.28"
+ENV REACT_APP_WS_PORT="8000"
+
 # Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
 
-COPY .env ./
 
-ENV WS_IP = "localhost"
-ENV WS_PORT = "8000"
 # Install project dependencies
 RUN npm install
 
@@ -20,5 +20,8 @@ COPY . .
 # Expose a port (if needed)
 EXPOSE 3000
 
-# Define the command to run your application
-CMD [ "npm", "start" ]
+RUN npm run build
+
+RUN npm install -g serve
+
+CMD ["serve", "-s", "build", "-l", "3000"]

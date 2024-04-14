@@ -11,9 +11,10 @@ function App() {
   useEffect(() => {
     // Connect to WebSocket server
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const ip = process.env.WS_IP || "localhost";
-    const port = process.env.WS_PORT || "8000";
-    ws = new WebSocket(`ws://${ip}:${port}`);
+    console.log("process.env", process.env.REACT_APP_WS_IP, process.env.REACT_APP_WS_PORT, process.env);
+    const ip = process.env.REACT_APP_WS_IP || "localhost";
+    const port = process.env.REACT_APP_WS_PORT || "8000";
+    ws = new WebSocket(`wss://${ip}:${port}`);
 
     ws.onopen = () => {
       console.log("Connected to WebSocket server");
