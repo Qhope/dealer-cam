@@ -8,6 +8,9 @@ WORKDIR /app
 COPY package*.json ./
 
 COPY .env ./
+
+ENV WS_IP = "localhost"
+ENV WS_PORT = "8000"
 # Install project dependencies
 RUN npm install
 
