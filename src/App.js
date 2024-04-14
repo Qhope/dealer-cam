@@ -6,20 +6,28 @@ let ws;
 function App() {
   const webcamRef = useRef(null);
   const [intervalId, setIntervalId] = useState(null);
+  const [frameRate, setFrameRate] = useState(24);
 
   useEffect(() => {
     // Connect to WebSocket server
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const ip = process.env.REACT_APP_IP || "localhost";
-    const port = process.env.REACT_APP_PORT || "8000";
+    const ip = process.env.WS_IP || "localhost";
+    const port = process.env.WS_PORT || "8000";
     ws = new WebSocket(`ws://${ip}:${port}`);
 
     ws.onopen = () => {
       console.log("Connected to WebSocket server");
     };
 
-    ws.onclose = (message,error,code) => {
-      console.log("Disconnected from WebSocket server: ",message, " error: ", error, " code: ", code);
+    ws.onclose = (message, error, code) => {
+      console.log(
+        "Disconnected from WebSocket server: ",
+        message,
+        " error: ",
+        error,
+        " code: ",
+        code
+      );
     };
 
     return () => {
@@ -36,20 +44,15 @@ function App() {
       const imageSrc = webcamRef.current.getScreenshot();
 
       ws.send(imageSrc);
-    }, 1000 / 24);
+    }, 1000 / frameRate);
     setIntervalId(interId);
   };
   const stopStream = () => {
     if (intervalId) {
       clearInterval(intervalId);
       setIntervalId(null);
-      ws.send("stop")
+      ws.send("stop");
     }
-  };
-  const sentOneFrame = () => {
-    const imageSrc = webcamRef.current.getScreenshot();
-
-    ws.send(imageSrc);
   };
 
   return (
@@ -64,7 +67,20 @@ function App() {
           screenshotFormat="image/jpeg"
         />
       </div>
-      <button onClick={sentOneFrame}>Sent one frame</button>
+      <h2>Controls</h2>
+      <input
+        type="number"
+        placeholder="Enter frame rate"
+        onChange={(evt) => {
+          const { value } = evt.target;
+          if (value) {
+            setFrameRate(Number(value));
+          }
+        }}
+        defaultValue={frameRate}
+      />
+      <br />
+      <h2>Actions</h2>
       <button onClick={startStream}>Start stream</button>
       <button onClick={stopStream}>Stop stream</button>
     </div>

@@ -14,26 +14,27 @@ async def server(websocket, path):
         try:
             message = await websocket.recv()
             # remove data:image/jpeg;base64, in the beginning of the message
-            message = message.split(",")[1]
-            # Decode the base64 string to bytes
-            image_bytes = base64.b64decode(message)
-            
-            # Convert the bytes to numpy array
-            image_array = np.frombuffer(image_bytes, dtype=np.uint8)
-            
-            image_array = np.reshape(image_array, (-1, 1))
-            # Reshape the numpy array
-            # Decode the numpy array to an image
-            image = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
-            
-            # Display the image in the cv2 window
-            cv2.imshow("Image", image)
-            
-            # Update the cv2 window
-            cv2.waitKey(1)
-            
-            # Increment the message count
-            message_count += 1
+            if(message != 'start' and message != 'stop'):
+                message = message.split(",")[1]
+                # Decode the base64 string to bytes
+                image_bytes = base64.b64decode(message)
+                
+                # Convert the bytes to numpy array
+                image_array = np.frombuffer(image_bytes, dtype=np.uint8)
+                
+                image_array = np.reshape(image_array, (-1, 1))
+                # Reshape the numpy array
+                # Decode the numpy array to an image
+                image = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
+                
+                # Display the image in the cv2 window
+                cv2.imshow("Image", image)
+                
+                # Update the cv2 window
+                cv2.waitKey(1)
+                
+                # Increment the message count
+                message_count += 1
             
             # Check if 1 second has passed
             if time.time() - start_time >= 1:
