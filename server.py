@@ -26,6 +26,8 @@ async def server(websocket, path):
                 # Reshape the numpy array
                 # Decode the numpy array to an image
                 image = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
+                # scale image to 1280 x 720
+                image = cv2.resize(image, (1280, 960))
                 
                 # Display the image in the cv2 window
                 cv2.imshow("Image", image)
